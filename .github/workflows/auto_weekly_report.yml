@@ -30,3 +30,9 @@ jobs:
       - name: Generate Weekly PDF Report
         run: |
           python generate_report.py weekly
+      - name: Upload Weekly PDF Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: Weekly-Progress-Report
+          path: "*_Weekly_Progress_Report_Form-3_*.pdf"
+          retention-days: 30
