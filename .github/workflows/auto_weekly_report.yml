@@ -1,0 +1,32 @@
+name: Weekly Progress Report Auto-Commit
+
+on:
+  schedule:
+    - cron: '29 18 * * 4'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate-and-commit:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository with Full Git History
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install PDF & Graph Dependencies
+        run: |
+          pip install reportlab matplotlib
+
+      - name: Generate Weekly PDF Report
+        run: |
+          python generate_report.py weekly
