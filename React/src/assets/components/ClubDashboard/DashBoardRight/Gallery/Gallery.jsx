@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import ImagesGallery from './ImagesGallery'
-import VideoGallery from './videoGallery'
+import VideoGallery from './VideoGallery'
 import AllContentGallery from './allContentGallery'
 import {Video, Images,GalleryVerticalEnd} from 'lucide-react'
 
