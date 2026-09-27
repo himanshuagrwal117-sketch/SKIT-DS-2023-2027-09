@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import ImagesGallery from './ImagesGallery'
 import VideoGallery from './VideoGallery'
-import AllContentGallery from './allContentGallery'
+import AllContentGallery from './AllContentGallery'
 import {Video, Images,GalleryVerticalEnd} from 'lucide-react'
 
 const Gallery = () => {
