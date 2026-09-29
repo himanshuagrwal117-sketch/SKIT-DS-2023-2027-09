@@ -1,73 +1,122 @@
 import React from "react";
-import { Calendar, Bell } from "lucide-react";
 import { Link } from "react-router-dom";
+import { UserRound } from "lucide-react";
 
-const Header = () => {
+const Header2 = () => {
   return (
-    <div className="w-full flex h-24 absolute justify-between items-center p-2 z-2">
+    <header className="absolute z-50 flex h-24 w-full items-center justify-between px-4">
 
-      {/* Logos */}
-      <div className="h-full w-1/8 flex justify-between items-center">
+      {/* ================= LOGOS ================= */}
+      <div className="flex h-full items-center gap-4">
+
         <img
-          src="./images/LOGO1.png"
+          src="/images/LOGO1.png"
           alt="SKIT Logo"
-          className="h-full"
+          className="h-[80%] object-contain"
         />
 
         <img
-          src="./images/eca logo.png"
+          src="/images/eca logo.png"
           alt="ECA Logo"
-          className="h-full"
+          className="h-[80%] object-contain"
         />
+
       </div>
 
-      {/* Navigation */}
-      <div className="flex h-1/3 w-[35%] justify-between items-center text-amber-50 z-1 text-[13px] font-bold mr-5">
 
-        <button
-          onClick={() => window.location.href = "https://www.skit.ac.in/"}
-          className="bg-transparent rounded-sm pt-1.5 pl-2.5 pr-2.5 pb-1.5 hover:bg-white hover:text-amber-800 hover:cursor-pointer ease-linear duration-200 transition-all"
+      {/* ================= NAVIGATION ================= */}
+      <nav className="flex items-center gap-1 text-[13px] font-bold text-amber-50">
+
+        {/* HOME */}
+        <Link
+          to="/studentpage"
+          className="rounded-md px-3 py-2 transition-all duration-200 hover:bg-white hover:text-[#900505]"
         >
-          SKIT Page
-        </button>
-
-        <Link to="/aboutus">
-          <button
-            className="bg-transparent rounded-sm pt-1.5 pl-2.5 pr-2.5 pb-1.5 hover:bg-white hover:text-amber-800 hover:cursor-pointer ease-linear duration-200 transition-all"
-          >
-            About us
-          </button>
+          Home
         </Link>
 
-        <button
-          className="bg-transparent rounded-sm pt-1.5 pl-2.5 pr-2.5 pb-1.5 hover:bg-white hover:text-amber-800 hover:cursor-pointer ease-linear duration-200 transition-all"
-        >
-          Contact Us
-        </button>
 
-        <button
-          className="bg-transparent rounded-sm pt-1.5 pl-2.5 pr-2.5 pb-1.5 hover:bg-white hover:text-amber-800 hover:cursor-pointer ease-linear duration-200 transition-all"
+        {/* EXPLORE CLUBS */}
+        <Link
+          to="/clubs"
+          className="rounded-md px-3 py-2 transition-all duration-200 hover:bg-white hover:text-[#900505]"
+        >
+          Explore Clubs
+        </Link>
+
+
+        {/* SODECA SECTION */}
+        <Link
+          to="/sodeca"
+          className="rounded-md px-3 py-2 transition-all duration-200 hover:bg-white hover:text-[#900505]"
+        >
+          SODECA
+        </Link>
+
+
+        {/* ALL EVENTS */}
+        <Link
+          to="/events"
+          className="rounded-md px-3 py-2 transition-all duration-200 hover:bg-white hover:text-[#900505]"
+        >
+          All Events
+        </Link>
+
+
+        {/* START NEW CLUB */}
+        <Link
+          to="/start-club"
+          className="rounded-md px-3 py-2 transition-all duration-200 hover:bg-white hover:text-[#900505]"
+        >
+          Start a New Club
+        </Link>
+
+
+        {/* ABOUT US */}
+        <Link
+          to="/aboutus"
+          className="rounded-md px-3 py-2 transition-all duration-200 hover:bg-white hover:text-[#900505]"
+        >
+          About Us
+        </Link>
+
+
+        {/* HELP */}
+        <Link
+          to="/help"
+          className="rounded-md px-3 py-2 transition-all duration-200 hover:bg-white hover:text-[#900505]"
         >
           Help
-        </button>
+        </Link>
 
-      </div>
+      </nav>
 
-      {/* Calendar & Notification */}
-      <div className="flex w-[9%] gap-6 items-center h-full">
 
-        <button className="rounded-full text-[#ffffff] hover:bg-white hover:text-[#aa1e1e] p-2 cursor-pointer">
-          <Calendar size={20} strokeWidth={2.7} />
-        </button>
+      {/* ================= PROFILE ================= */}
+      <Link
+        to="/profile"
+        className="
+          flex items-center gap-2
+          rounded-full
+          border border-white/30
+          bg-white/10
+          px-4 py-2
+          text-[13px]
+          font-semibold
+          text-white
+          backdrop-blur-sm
+          transition-all duration-200
+          hover:bg-white
+          hover:text-[#900505]
+        "
+      >
+        <UserRound size={18} strokeWidth={2.3} />
 
-        <button className="rounded-full text-[#ffffff] hover:bg-white hover:text-[#aa1e1e] p-2 cursor-pointer">
-          <Bell size={20} strokeWidth={2.7} />
-        </button>
+        <span>My Profile</span>
+      </Link>
 
-      </div>
-
-    </div>
+    </header>
   );
 };
 
-export default Header;
+export default Header2;

@@ -31,14 +31,35 @@ export const StudentPage = () => {
 };
 
   useEffect(() => {
-    if (location.hash === '#upcoming-events' && upcomingEventsRef.current) {
-      scrollToUpcomingEvents();
-    }
+  const checkAuth = async () => {
+    try {
+      const response = await fetch("http://localhost:5000/auth/me", {
+        credentials: "include",
+      });
 
-    if (location.hash === '#about-clubs' && aboutEventRef.current) {
-      scrollToAboutEvents();
+      if (!response.ok) {
+        window.location.href = "/";
+        return;
+      }
+
+      const data = await response.json();
+      console.log("Authenticated user:", data.email);
+    } catch (error) {
+      console.error("Auth check failed:", error);
+      window.location.href = "/";
     }
-  }, [location]);
+  };
+
+  checkAuth();
+
+  if (location.hash === '#upcoming-events' && upcomingEventsRef.current) {
+    scrollToUpcomingEvents();
+  }
+
+  if (location.hash === '#about-clubs' && aboutEventRef.current) {
+    scrollToAboutEvents();
+  }
+}, [location]);
 
   return (
     <div>
