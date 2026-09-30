@@ -1,8 +1,12 @@
+
 import React from "react";
 import { Link } from "react-router-dom";
-import { UserRound } from "lucide-react";
+import { UserRound, Trophy } from "lucide-react";
 
 const Header2 = () => {
+  // Sample student points (replace with actual backend data)
+  const studentPoints = 250;
+
   return (
     <header className="absolute z-50 flex h-24 w-full items-center justify-between px-4">
 
@@ -90,6 +94,36 @@ const Header2 = () => {
         </Link>
 
       </nav>
+
+
+      {/* ================= STUDENT POINTS ================= */}
+      <div
+        className="
+          flex items-center gap-2
+          rounded-full
+          border border-amber-300/40
+          bg-amber-400/15
+          px-4 py-2
+          text-[13px]
+          font-semibold
+          text-amber-100
+          backdrop-blur-sm
+          transition-all duration-200
+          hover:bg-amber-400/25
+        "
+      >
+        <Trophy
+          size={18}
+          strokeWidth={2.3}
+          className="text-amber-300"
+        />
+
+        <span>My Points:</span>
+
+        <span className="font-bold text-amber-300">
+          {studentPoints}
+        </span>
+      </div>
 
 
       {/* ================= PROFILE ================= */}
