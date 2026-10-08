@@ -1,23 +1,506 @@
-import React from 'react'
-import {LayoutDashboard, LibraryBig, User, CalendarHeart, Users, ClipboardClock, Files, Award, Image} from 'lucide-react'
+import React from "react";
 
-const DashboardLeftSection = ({setActiveState , ActiveState}) => {
-  
+import {
+  LayoutDashboard,
+  LibraryBig,
+  CalendarHeart,
+  UserRound,
+  Users,
+  ClipboardClock,
+  Files,
+  Award,
+  Image,
+  UserCheck,
+  Settings,
+  ChevronRight,
+  PanelLeft,
+} from "lucide-react";
+
+const DashboardLeftSection = ({
+  setActiveState,
+  ActiveState,
+}) => {
+
+  /* =====================================================
+      MENU DATA
+  ===================================================== */
+
+  const menuSections = [
+    {
+      title: "Overview",
+      items: [
+        {
+          id: "dashboard",
+          label: "Dashboard",
+          icon: LayoutDashboard,
+        },
+        {
+          id: "club information",
+          label: "Club Information",
+          icon: LibraryBig,
+        },
+        {
+          id: "events",
+          label: "Events",
+          icon: CalendarHeart,
+        },
+        {
+          id: "member info",
+          label: "Members",
+          icon: UserRound,
+        },
+        {
+          id: "volunteer info",
+          label: "Volunteers",
+          icon: Users,
+        },
+      ],
+    },
+
+    {
+      title: "Management",
+      items: [
+        {
+          id: "registrations",
+          label: "Registrations",
+          icon: UserCheck,
+        },
+        {
+          id: "pending event",
+          label: "Event Requests",
+          icon: ClipboardClock,
+          badge: 3,
+        },
+        {
+          id: "documents",
+          label: "Documents",
+          icon: Files,
+        },
+      ],
+    },
+
+    {
+      title: "Club Profile",
+      items: [
+        {
+          id: "achievements",
+          label: "Achievements & Badges",
+          icon: Award,
+        },
+        {
+          id: "gallery",
+          label: "Gallery",
+          icon: Image,
+        },
+      ],
+    },
+  ];
+
+
+  /* =====================================================
+      NAVIGATION ITEM
+  ===================================================== */
+
+  const NavItem = ({ item }) => {
+
+    const Icon = item.icon;
+    const isActive = ActiveState === item.id;
+
+    return (
+      <button
+        type="button"
+        onClick={() => setActiveState(item.id)}
+        className={`
+          group
+          relative
+          flex
+          h-[42px]
+          w-full
+          items-center
+          rounded-[10px]
+          px-2.5
+          text-left
+
+          transition-all
+          duration-200
+
+          ${
+            isActive
+              ? `
+                bg-[#900505]
+                text-white
+                shadow-[0_5px_16px_rgba(144,5,5,0.14)]
+              `
+              : `
+                text-[#655C5C]
+                hover:bg-[#900505]/[0.045]
+                hover:text-[#900505]
+              `
+          }
+        `}
+      >
+
+        {/* ACTIVE LEFT INDICATOR */}
+        {isActive && (
+          <span
+            className="
+              absolute
+              -left-[1px]
+              top-1/2
+              h-[18px]
+              w-[3px]
+              -translate-y-1/2
+              rounded-r-full
+              bg-white
+            "
+          />
+        )}
+
+
+        {/* ICON */}
+        <div
+          className={`
+            mr-2.5
+            flex
+            h-[28px]
+            w-[28px]
+            shrink-0
+            items-center
+            justify-center
+            rounded-[8px]
+
+            transition-all
+            duration-200
+
+            ${
+              isActive
+                ? "bg-white/10 text-white"
+                : `
+                  bg-[#900505]/[0.055]
+                  text-[#900505]
+                  group-hover:bg-[#900505]/[0.08]
+                `
+            }
+          `}
+        >
+          <Icon
+            size={14.5}
+            strokeWidth={1.9}
+          />
+        </div>
+
+
+        {/* LABEL */}
+        <span
+          className={`
+            min-w-0
+            flex-1
+            truncate
+            text-[11.5px]
+
+            ${
+              isActive
+                ? "font-semibold"
+                : "font-medium"
+            }
+          `}
+        >
+          {item.label}
+        </span>
+
+
+        {/* BADGE */}
+        {item.badge !== undefined && (
+          <span
+            className={`
+              ml-1.5
+              flex
+              min-w-[19px]
+              items-center
+              justify-center
+              rounded-full
+              px-1.5
+              py-[2px]
+
+              text-[8.5px]
+              font-bold
+
+              ${
+                isActive
+                  ? "bg-white/15 text-white"
+                  : "bg-[#900505]/10 text-[#900505]"
+              }
+            `}
+          >
+            {item.badge}
+          </span>
+        )}
+
+
+        {/* ACTIVE ARROW */}
+        {isActive && item.badge === undefined && (
+          <ChevronRight
+            size={12}
+            strokeWidth={2.2}
+            className="ml-1 text-white/60"
+          />
+        )}
+
+      </button>
+    );
+  };
+
+
   return (
-    <div className='bg-white outline outline-[#a4a4a4] text-[14px] w-[25%] p-5 flex gap-2 flex-col justify-start h-full rounded-2xl overflow-hidden'>
-        <div onClick={()=>setActiveState('dashboard')} className={`w-full rounded-lg h-[7vh] flex items-center p-3 hover:cursor-pointer transition-all duration-200 ease-in hover:scale-102 ${ActiveState==='dashboard'? 'outline outline-[#8e2020] bg-[#8e2020] text-[#ffffff]' : 'outline outline-[#ffffff] bg-[#ffffff]'} hover:outline-[#8e2020] font-medium gap-5`}><LayoutDashboard size={20} className={`${ActiveState==='dashboard'? "text-[#ffffff]":"text-[#983530]"}`} />Dashboard</div>
-         <div onClick={()=>setActiveState('club information')} className={`w-full rounded-lg h-[7vh] flex items-center p-3 hover:cursor-pointer transition-all duration-200 ease-in hover:scale-102 ${ActiveState==='club information'? 'outline outline-[#8e2020] bg-[#8e2020] text-[#ffffff]' : 'outline outline-[#ffffff] bg-[#ffffff]'} hover:outline-[#8e2020] font-medium gap-5`}><LibraryBig size={20} className={`${ActiveState==='club information'? "text-[#ffffff]":"text-[#983530]"}`} />Club Information</div>
-          <div  onClick={()=>setActiveState('events')} className={`w-full rounded-lg h-[7vh] flex items-center p-3 hover:cursor-pointer transition-all duration-200 ease-in hover:scale-102 ${ActiveState==='events'? 'outline outline-[#8e2020] bg-[#8e2020] text-[#ffffff]' : 'outline outline-[#ffffff] bg-[#ffffff]'} hover:outline-[#8e2020] font-medium gap-5`}><CalendarHeart size={20} className={`${ActiveState==='events'? "text-[#ffffff]":"text-[#983530]"}`} />Events</div>
-          <div onClick={()=>setActiveState('member info')} className={`w-full rounded-lg h-[7vh] flex items-center p-3 hover:cursor-pointer transition-all duration-200 ease-in hover:scale-102 ${ActiveState==='member info'? 'outline outline-[#8e2020] bg-[#8e2020] text-[#ffffff]' : 'outline outline-[#ffffff] bg-[#ffffff]'} hover:outline-[#8e2020] font-medium gap-5`}><User size={20} className={`${ActiveState==='member info'? "text-[#ffffff]":"text-[#983530]"}`} />Members Information</div>
-           <div onClick={()=>setActiveState('volunteer info')} className={`w-full rounded-lg h-[7vh] flex items-center p-3 hover:cursor-pointer transition-all duration-200 ease-in hover:scale-102 ${ActiveState==='volunteer info'? 'outline outline-[#8e2020] bg-[#8e2020] text-[#ffffff]' : 'outline outline-[#ffffff] bg-[#ffffff]'} hover:outline-[#8e2020] font-medium gap-5`}><Users size={20} className={`${ActiveState==='volunteer info'? "text-[#ffffff]":"text-[#983530]"}`} />Volunteers Information</div>
-            <div onClick={()=>setActiveState('pending event')} className={`w-full rounded-lg h-[7vh] flex items-center p-3 hover:cursor-pointer transition-all duration-200 ease-in hover:scale-102 ${ActiveState==='pending event'? 'outline outline-[#8e2020] bg-[#8e2020] text-[#ffffff]' : 'outline outline-[#ffffff] bg-[#ffffff]'} hover:outline-[#8e2020] font-medium gap-5`}><ClipboardClock size={20} className={`${ActiveState==='pending event'? "text-[#ffffff]":"text-[#983530]"}`} />Pending Event Request</div>
-             <div  onClick={()=>setActiveState('documents')} className={`w-full rounded-lg h-[7vh] flex items-center p-3 hover:cursor-pointer transition-all duration-200 ease-in hover:scale-102 ${ActiveState==='documents'? 'outline outline-[#8e2020] bg-[#8e2020] text-[#ffffff]' : 'outline outline-[#ffffff] bg-[#ffffff]'} hover:outline-[#8e2020] font-medium gap-5`}><Files size={20} className={`${ActiveState==='documents'? "text-[#ffffff]":"text-[#983530]"}`} />Documents</div>
-              <div onClick={()=>setActiveState('achivements')} className={`w-full rounded-lg h-[7vh] flex items-center p-3 hover:cursor-pointer transition-all duration-200 ease-in hover:scale-102 ${ActiveState==='achivements'? 'outline outline-[#8e2020] bg-[#8e2020] text-[#ffffff]' : 'outline outline-[#ffffff] bg-[#ffffff]'} hover:outline-[#8e2020] font-medium gap-5`}><Award size={20} className={`${ActiveState==='achivements'? "text-[#ffffff]":"text-[#983530]"}`} />Achievements and Badges</div>
-               <div  onClick={()=>setActiveState('gallery')} className={`w-full rounded-lg h-[7vh] flex items-center p-3 hover:cursor-pointer transition-all duration-200 ease-in hover:scale-102 ${ActiveState==='gallery'? 'outline outline-[#8e2020] bg-[#8e2020] text-[#ffffff]' : 'outline outline-[#ffffff] bg-[#ffffff]'} hover:outline-[#8e2020] font-medium gap-5`}><Image size={20} className={`${ActiveState==='gallery'? "text-[#ffffff]":"text-[#983530]"}`} />Gallery</div>
-    </div>
-    
-  )
-  
-}
+    <aside
+      className="
+        flex
+        h-full
+        w-[250px]
+        shrink-0
+        flex-col
+        bg-[#FCFAFA]
+        px-3
+        py-4
+      "
+    >
 
-export default DashboardLeftSection
+      {/* =====================================================
+          WORKSPACE HEADER
+      ===================================================== */}
+
+      <div className="px-1.5">
+
+        <div className="flex items-center gap-2.5">
+
+          <div
+            className="
+              flex
+              h-[34px]
+              w-[34px]
+              shrink-0
+              items-center
+              justify-center
+              rounded-[9px]
+
+              border
+              border-[#900505]/[0.06]
+
+              bg-[#900505]/[0.055]
+              text-[#900505]
+            "
+          >
+            <PanelLeft
+              size={15}
+              strokeWidth={1.9}
+            />
+          </div>
+
+
+          <div className="min-w-0">
+
+            <p
+              className="
+                truncate
+                text-[11.5px]
+                font-semibold
+                text-[#342A2A]
+              "
+            >
+              Club Workspace
+            </p>
+
+            <p
+              className="
+                mt-0.5
+                truncate
+                text-[9px]
+                text-[#A19898]
+              "
+            >
+              Management panel
+            </p>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+      {/* DIVIDER */}
+      <div className="my-4 h-px w-full bg-[#EEE7E7]" />
+
+
+      {/* =====================================================
+          NAVIGATION
+      ===================================================== */}
+
+      <nav
+        className="
+          min-h-0
+          flex-1
+          overflow-y-auto
+          pr-0.5
+
+          [&::-webkit-scrollbar]:w-[3px]
+          [&::-webkit-scrollbar-track]:bg-transparent
+          [&::-webkit-scrollbar-thumb]:rounded-full
+          [&::-webkit-scrollbar-thumb]:bg-[#900505]/10
+        "
+      >
+
+        {menuSections.map((section, sectionIndex) => (
+
+          <div
+            key={section.title}
+            className={
+              sectionIndex === menuSections.length - 1
+                ? ""
+                : "mb-4"
+            }
+          >
+
+            {/* SECTION TITLE */}
+            <p
+              className="
+                mb-1.5
+                px-2.5
+
+                text-[8px]
+                font-bold
+                uppercase
+                tracking-[0.16em]
+                text-[#AAA0A0]
+              "
+            >
+              {section.title}
+            </p>
+
+
+            {/* ITEMS */}
+            <div className="space-y-[3px]">
+
+              {section.items.map((item) => (
+                <NavItem
+                  key={item.id}
+                  item={item}
+                />
+              ))}
+
+            </div>
+
+          </div>
+
+        ))}
+
+      </nav>
+
+
+      {/* =====================================================
+          SETTINGS
+      ===================================================== */}
+
+      <div
+        className="
+          mt-3
+          border-t
+          border-[#EEE7E7]
+          pt-3
+        "
+      >
+
+        <button
+          type="button"
+          onClick={() => setActiveState("settings")}
+          className={`
+            group
+            relative
+            flex
+            h-[42px]
+            w-full
+            items-center
+            rounded-[10px]
+            px-2.5
+
+            transition-all
+            duration-200
+
+            ${
+              ActiveState === "settings"
+                ? `
+                  bg-[#900505]
+                  text-white
+                  shadow-[0_5px_16px_rgba(144,5,5,0.14)]
+                `
+                : `
+                  text-[#655C5C]
+                  hover:bg-[#900505]/[0.045]
+                  hover:text-[#900505]
+                `
+            }
+          `}
+        >
+
+          {ActiveState === "settings" && (
+            <span
+              className="
+                absolute
+                -left-[1px]
+                top-1/2
+                h-[18px]
+                w-[3px]
+                -translate-y-1/2
+                rounded-r-full
+                bg-white
+              "
+            />
+          )}
+
+
+          <div
+            className={`
+              mr-2.5
+              flex
+              h-[28px]
+              w-[28px]
+              items-center
+              justify-center
+              rounded-[8px]
+
+              ${
+                ActiveState === "settings"
+                  ? "bg-white/10"
+                  : "bg-[#900505]/[0.055] text-[#900505]"
+              }
+            `}
+          >
+            <Settings
+              size={14.5}
+              strokeWidth={1.9}
+            />
+          </div>
+
+
+          <span className="flex-1 text-left text-[11.5px] font-medium">
+            Club Settings
+          </span>
+
+
+          {ActiveState === "settings" && (
+            <ChevronRight
+              size={12}
+              strokeWidth={2.2}
+              className="text-white/60"
+            />
+          )}
+
+        </button>
+
+      </div>
+
+    </aside>
+  );
+};
+
+export default DashboardLeftSection;
