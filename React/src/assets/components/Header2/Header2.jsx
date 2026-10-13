@@ -1,8 +1,12 @@
+
 import React from "react";
 import { Link } from "react-router-dom";
-import { UserRound } from "lucide-react";
+import { UserRound, Trophy } from "lucide-react";
 
 const Header2 = () => {
+  // Sample student points (replace with actual backend data)
+  const studentPoints = 250;
+
   return (
     <header
       className="
@@ -137,6 +141,7 @@ const Header2 = () => {
           Help
         </Link>
       </nav>
+
 
       {/* ================= PROFILE ================= */}
       <Link
