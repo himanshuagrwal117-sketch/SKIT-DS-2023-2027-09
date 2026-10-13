@@ -11,6 +11,7 @@ import StartNewClub from "./assets/components/Student_page/StartNewClub/StartNew
 import HelpPage from "./assets/components/Student_page/HelpPage/HelpPage";
 
 import ClubDashboardPage from "./assets/components/ClubDashboard/ClubDashboardPage";
+import StudentProfileDashboard from "./assets/components/Student_page/StudentProfileDashboard/StudentProfileDashboard";
 
 const App = () => {
   return (
@@ -27,6 +28,11 @@ const App = () => {
         <Route
           path="/studentpage"
           element={<StudentPage />}
+        />
+
+        <Route
+          path="/student-profile"
+          element={<StudentProfileDashboard />}
         />
 
         {/* ================= ABOUT US ================= */}

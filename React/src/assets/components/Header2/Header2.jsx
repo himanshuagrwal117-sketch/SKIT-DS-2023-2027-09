@@ -140,7 +140,7 @@ const Header2 = () => {
 
       {/* ================= PROFILE ================= */}
       <Link
-        to="/profile"
+        to="/student-profile"
         className="
           flex items-center gap-2
           rounded-full
