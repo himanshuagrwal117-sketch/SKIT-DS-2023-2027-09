@@ -42,7 +42,7 @@ const Header2 = () => {
 
       {/* ================= NAVIGATION ================= */}
       <nav className="flex items-center gap-1 text-[13px] font-bold text-amber-50">
-        
+
         {/* HOME */}
         <Link
           to="/studentpage"
@@ -142,36 +142,70 @@ const Header2 = () => {
         </Link>
       </nav>
 
+      {/* ================= POINTS + PROFILE ================= */}
+      <div className="flex items-center gap-3">
 
-      {/* ================= PROFILE ================= */}
-      <Link
-        to="/student-profile"
-        className="
-          flex items-center gap-2
-          rounded-full
+        {/* STUDENT TOTAL POINTS */}
+        <div
+          className="
+            flex items-center gap-2
+            rounded-full
 
-          border border-white/30
-          bg-white/10
-          backdrop-blur-md
+            border border-amber-200/40
+            bg-white/10
+            backdrop-blur-md
 
-          px-4 py-2
+            px-4 py-2
 
-          text-[13px]
-          font-semibold
-          text-white
+            text-[13px]
+            font-semibold
+            text-amber-50
 
-          shadow-[inset_0_1px_0_rgba(255,255,255,0.15)]
+            shadow-[inset_0_1px_0_rgba(255,255,255,0.15)]
+          "
+          title="Your Total Points"
+        >
+          <Trophy
+            size={18}
+            strokeWidth={2.2}
+            className="text-amber-300"
+          />
 
-          transition-all duration-200
+          <span className="whitespace-nowrap">
+            {studentPoints.toLocaleString()} Points
+          </span>
+        </div>
 
-          hover:bg-white/90
-          hover:text-[#900505]
-          hover:border-white/60
-        "
-      >
-        <UserRound size={18} strokeWidth={2.3} />
-        <span>My Profile</span>
-      </Link>
+        {/* MY PROFILE */}
+        <Link
+          to="/student-profile"
+          className="
+            flex items-center gap-2
+            rounded-full
+
+            border border-white/30
+            bg-white/10
+            backdrop-blur-md
+
+            px-4 py-2
+
+            text-[13px]
+            font-semibold
+            text-white
+
+            shadow-[inset_0_1px_0_rgba(255,255,255,0.15)]
+
+            transition-all duration-200
+
+            hover:bg-white/90
+            hover:text-[#900505]
+            hover:border-white/60
+          "
+        >
+          <UserRound size={18} strokeWidth={2.3} />
+          <span>My Profile</span>
+        </Link>
+      </div>
     </header>
   );
 };
