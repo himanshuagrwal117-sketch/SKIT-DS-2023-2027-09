@@ -11,7 +11,7 @@ const categoryStyles = {
   default: "bg-gray-500/15 text-gray-400 border-gray-400/30",
 };
 
-export default function UpCmingEventCard({
+export default function UpComingEventCard({
   category = "Technical",
   poster = "",
   title = "Upcoming Event",
