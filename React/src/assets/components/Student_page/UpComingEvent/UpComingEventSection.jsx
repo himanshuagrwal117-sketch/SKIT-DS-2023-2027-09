@@ -1,6 +1,6 @@
 
 import { motion } from "framer-motion";
-import UpCmingEventCard from "./UpCmingEventCard";
+import UpComingEventCard from "./UpComingEventCard";
 
 const events = [
   {
@@ -70,7 +70,7 @@ export default function UpComingEventSection() {
         transition={{ duration: 0.4 }}
       >
         {events.map((event) => (
-          <UpCmingEventCard
+          <UpComingEventCard
             key={event.id}
             category={event.category}
             title={event.title}
