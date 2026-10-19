@@ -91,12 +91,14 @@ app.post("/auth/google", async (req, res) => {
 
 
     // ================= SAVE JWT COOKIE =================
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: false,
-      sameSite: "lax",
-      maxAge: 24 * 60 * 60 * 1000,
-    });
+    const isProduction = process.env.NODE_ENV === "production";
+
+res.cookie("token", token, {
+  httpOnly: true,
+  secure: isProduction,
+  sameSite: isProduction ? "none" : "lax",
+  maxAge: 24 * 60 * 60 * 1000,
+});
 
 
     // Login success
@@ -151,8 +153,14 @@ app.get("/auth/me", (req, res) => {
 
 
 // ================= START SERVER =================
-const PORT = 5000;
+// Export Express app for Vercel
+export default app;
 
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
-});
+// Start server only for local development
+if (!process.env.VERCEL) {
+  const PORT = process.env.PORT || 5000;
+
+  app.listen(PORT, () => {
+    console.log(`Orbix backend running on port ${PORT}`);
+  });
+}

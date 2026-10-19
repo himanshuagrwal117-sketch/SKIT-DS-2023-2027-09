@@ -1,8 +1,17 @@
-import React from "react";
-import { Link } from "react-router-dom";
+
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import Counter from "../Effects/Counter";
 import { useGoogleLogin } from "@react-oauth/google";
+
+/* ------------------------------------------------------------------ */
+/* API Configuration */
+/* ------------------------------------------------------------------ */
+
+const API_URL = (
+  import.meta.env.VITE_API_URL || "http://localhost:5000"
+).replace(/\/+$/, "");
 
 /* ------------------------------------------------------------------ */
 /* StatCard */
@@ -41,16 +50,29 @@ const StatCard = ({ label, end, from = "left", className = "" }) => {
 /* ------------------------------------------------------------------ */
 
 const Section1 = () => {
-  /* ----------------------------- */
+  const navigate = useNavigate();
+
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const [loginError, setLoginError] = useState("");
+
+  /* ---------------------------------------------------------------- */
   /* Google Login */
-  /* ----------------------------- */
+  /* ---------------------------------------------------------------- */
 
   const login = useGoogleLogin({
     flow: "auth-code",
 
     onSuccess: async (response) => {
+      setIsLoggingIn(true);
+      setLoginError("");
+
       try {
-        const result = await fetch("http://localhost:5000/auth/google", {
+        if (!response.code) {
+          throw new Error("Google authorization code was not received.");
+        }
+
+        // Send Google authorization code to deployed backend
+        const result = await fetch(`${API_URL}/auth/google`, {
           method: "POST",
           credentials: "include",
           headers: {
@@ -63,30 +85,46 @@ const Section1 = () => {
 
         const data = await result.json();
 
-        if (result.ok) {
-          window.location.href = "/studentpage";
-        } else {
-          alert(data.message);
+        if (!result.ok) {
+          throw new Error(
+            data.message || "Google authentication failed."
+          );
         }
+
+        // Backend successfully authenticated SKIT college email
+        console.log("Orbix login successful:", data.email);
+
+        // Redirect to Student Dashboard
+        navigate("/studentpage", { replace: true });
+
       } catch (error) {
-        console.error("Login error:", error);
+        console.error("Orbix login error:", error);
+
+        setLoginError(
+          error.message ||
+            "Unable to log in. Please try again."
+        );
+      } finally {
+        setIsLoggingIn(false);
       }
     },
 
     onError: () => {
-      console.log("Google login failed");
+      setIsLoggingIn(false);
+      setLoginError(
+        "Google sign-in failed or was cancelled. Please try again."
+      );
     },
   });
 
-  /* ----------------------------- */
+  /* ---------------------------------------------------------------- */
   /* UI */
-  /* ----------------------------- */
+  /* ---------------------------------------------------------------- */
 
   return (
     <section className="relative flex min-h-screen w-full items-start overflow-hidden bg-linear-to-b from-[#931913] to-[#580e07]">
-      {/* ------------------------------------------------------------ */}
+
       {/* Background Image */}
-      {/* ------------------------------------------------------------ */}
 
       <img
         src="/images/skit2.png"
@@ -95,15 +133,11 @@ const Section1 = () => {
         className="pointer-events-none absolute inset-0 h-full w-full object-cover opacity-10"
       />
 
-      {/* ------------------------------------------------------------ */}
       {/* Main Content */}
-      {/* ------------------------------------------------------------ */}
 
       <div className="relative z-10 mx-auto flex w-full max-w-7xl flex-col items-center px-6 pb-8 pt-24 lg:pb-6 lg:pt-20">
 
-        {/* ---------------------------------------------------------- */}
-        {/* Logo / Heading */}
-        {/* ---------------------------------------------------------- */}
+        {/* Heading */}
 
         <motion.h1
           initial={{ opacity: 0, y: -20 }}
@@ -114,9 +148,7 @@ const Section1 = () => {
           Orbix
         </motion.h1>
 
-        {/* ---------------------------------------------------------- */}
         {/* Description */}
-        {/* ---------------------------------------------------------- */}
 
         <motion.p
           initial={{ opacity: 0, y: 10 }}
@@ -130,9 +162,7 @@ const Section1 = () => {
           upcoming events — all in one place.
         </motion.p>
 
-        {/* ---------------------------------------------------------- */}
         {/* Login Buttons */}
-        {/* ---------------------------------------------------------- */}
 
         <motion.div
           initial={{ opacity: 0, y: 15 }}
@@ -140,35 +170,47 @@ const Section1 = () => {
           transition={{ duration: 0.7, delay: 0.2 }}
           className="mt-5 flex flex-col items-center gap-3 sm:flex-row sm:gap-5"
         >
+
           {/* Student Login */}
 
           <button
-            onClick={() => login()}
-            className="w-52 rounded-full border-2 border-amber-50 bg-white px-5 py-2.5 text-sm font-bold text-[#900505] transition-all duration-200 ease-linear hover:cursor-pointer hover:bg-transparent hover:text-amber-50"
+            type="button"
+            onClick={() => {
+              setLoginError("");
+              login();
+            }}
+            disabled={isLoggingIn}
+            className="w-52 rounded-full border-2 border-amber-50 bg-white px-5 py-2.5 text-sm font-bold text-[#900505] transition-all duration-200 ease-linear hover:cursor-pointer hover:bg-transparent hover:text-amber-50 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            Login as a Student
+            {isLoggingIn ? "Logging in..." : "Login as a Student"}
           </button>
 
           {/* Club Login */}
 
-          <Link to="/ClubDashboard">
-            <button
-              className="w-52 rounded-full border-2 border-amber-50 bg-white px-5 py-2.5 text-sm font-bold text-[#900505] transition-all duration-200 ease-linear hover:cursor-pointer hover:bg-transparent hover:text-amber-50"
-            >
-              Login as a Club
-            </button>
+          <Link
+            to="/ClubDashboard"
+            className="flex w-52 items-center justify-center rounded-full border-2 border-amber-50 bg-white px-5 py-2.5 text-sm font-bold text-[#900505] transition-all duration-200 ease-linear hover:bg-transparent hover:text-amber-50"
+          >
+            Login as a Club
           </Link>
         </motion.div>
 
-        {/* ---------------------------------------------------------- */}
+        {/* Login Error */}
+
+        {loginError && (
+          <div
+            role="alert"
+            className="mt-4 max-w-md rounded-xl border border-red-200/40 bg-red-950/50 px-4 py-3 text-center text-sm text-white"
+          >
+            {loginError}
+          </div>
+        )}
+
         {/* Hero / Stats Area */}
-        {/* ---------------------------------------------------------- */}
 
         <div className="relative mt-8 flex w-full max-w-6xl justify-center">
 
-          {/* ======================================================== */}
-          {/* DESKTOP STAT CARD - LEFT */}
-          {/* ======================================================== */}
+          {/* Desktop Stat Card - Left */}
 
           <StatCard
             label="Students Registered in Clubs"
@@ -177,9 +219,7 @@ const Section1 = () => {
             className="absolute left-0 top-10 z-20 hidden lg:block xl:left-2"
           />
 
-          {/* ======================================================== */}
-          {/* DESKTOP STAT CARD - RIGHT */}
-          {/* ======================================================== */}
+          {/* Desktop Stat Card - Right */}
 
           <StatCard
             label="Clubs Registered in College"
@@ -188,9 +228,7 @@ const Section1 = () => {
             className="absolute right-0 top-10 z-20 hidden lg:block xl:right-2"
           />
 
-          {/* ======================================================== */}
-          {/* TABLET / MOBILE STAT CARDS */}
-          {/* ======================================================== */}
+          {/* Tablet / Mobile Stat Cards */}
 
           <div className="mb-5 flex w-full justify-center gap-3 lg:hidden">
             <StatCard
@@ -206,9 +244,7 @@ const Section1 = () => {
             />
           </div>
 
-          {/* ======================================================== */}
-          {/* MAIN IMAGE */}
-          {/* ======================================================== */}
+          {/* Main Image */}
 
           <motion.img
             initial={{ opacity: 0, scale: 0.97 }}
