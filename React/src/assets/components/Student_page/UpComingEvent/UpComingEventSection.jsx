@@ -1,6 +1,6 @@
 import React from "react";
 import { CalendarDays, ArrowRight } from "lucide-react";
-import UpCmingEventCard from "./UpComingEventCard";
+import UpComingEventCard from "./UpComingEventCard";
 
 const UpComingEventSection = ({ upcomingEventsRef }) => {
   return (
@@ -67,10 +67,10 @@ const UpComingEventSection = ({ upcomingEventsRef }) => {
 
           <div className="flex w-max flex-nowrap items-center gap-4 px-5 py-5">
 
-            <UpCmingEventCard />
-            <UpCmingEventCard />
-            <UpCmingEventCard />
-            <UpCmingEventCard />
+            <UpComingEventCard />
+            <UpComingEventCard />
+            <UpComingEventCard />
+            <UpComingEventCard />
 
           </div>
 
