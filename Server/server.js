@@ -15,6 +15,7 @@ const googleClient = new OAuth2Client(
 );
 
 
+
 const allowedOrigins = [
   "https://skit-ds-2023-2027-09.vercel.app",
   "https://orbix-himanshu-preview.vercel.app",
@@ -26,18 +27,31 @@ app.use(
   cors({
     origin: (origin, callback) => {
       if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
+        return callback(null, origin || false);
       }
+
+      console.error("CORS blocked origin:", origin);
+
+      return callback(new Error("Not allowed by CORS"));
     },
     credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
 
 
+
 app.use(express.json());
 app.use(cookieParser());
+
+app.get("/debug/cors", (req, res) => {
+  res.json({
+    originReceived: req.headers.origin || null,
+    allowed: allowedOrigins.includes(req.headers.origin),
+    version: "cors-fix-v2",
+  });
+});
 
 
 // ================= SERVER CHECK =================
