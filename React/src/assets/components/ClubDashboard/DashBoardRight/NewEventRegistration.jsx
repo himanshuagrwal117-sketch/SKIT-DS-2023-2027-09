@@ -70,7 +70,7 @@ const SectionHeading = ({ number, icon: Icon, title, subtitle }) => (
   </div>
 );
 
-const NewEventReigistration = ({
+const NewEventRegistration = ({
   isOpen,
   onClose,
   onSaveDraft,
@@ -728,4 +728,4 @@ const NewEventReigistration = ({
   );
 };
 
-export default NewEventReigistration;
+export default NewEventRegistration;
