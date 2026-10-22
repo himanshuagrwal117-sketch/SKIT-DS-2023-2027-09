@@ -1082,35 +1082,20 @@ const DashboardOverview = () => {
       </section>
 
       {/* START NEW EVENT REGISTRATION MODAL */}
-      {isEventModalOpen && (
-        <div
-          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/35 px-4 py-6 backdrop-blur-md"
-          onMouseDown={(event) => {
-            if (event.target === event.currentTarget) {
-              setIsEventModalOpen(false);
-            }
-          }}
-          role="presentation"
-        >
-          <div
-            role="dialog"
-            aria-modal="true"
-            aria-label="Start New Event"
-            className="relative max-h-[90vh] w-full max-w-[1100px] overflow-y-auto rounded-[20px] border border-white/60 bg-white shadow-[0_24px_80px_rgba(0,0,0,0.22)] animate-[modalIn_180ms_ease-out]"
-            onMouseDown={(event) => event.stopPropagation()}
-          >
-            <button
-              type="button"
-              onClick={() => setIsEventModalOpen(false)}
-              aria-label="Close popup"
-              className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full border border-[#EAE2E2] bg-white/80 text-[#776D6D] transition hover:bg-[#900505] hover:text-white"
-            >
-              <span className="text-[22px] leading-none">&times;</span>
-            </button>
-            <NewEventRegistration />
-          </div>
-        </div>
-      )}
+      
+{isEventModalOpen && (
+  <NewEventRegistration
+    isOpen={isEventModalOpen}
+    onClose={() => setIsEventModalOpen(false)}
+    clubName="CodeFiesta Club"
+    onSaveDraft={async (eventData) => {
+      console.log("Draft saved:", eventData);
+    }}
+    onSubmit={async (eventData) => {
+      console.log("Event submitted:", eventData);
+    }}
+  />
+)}
 
       <style>{`
         @keyframes modalIn {
