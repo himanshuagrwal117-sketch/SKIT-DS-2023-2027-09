@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 
 import {
   CalendarHeart,
@@ -31,6 +31,7 @@ import DocumenetsDashboard from "./Documents/DocumenetsDashboard";
 import ClubInfoDashboard from "./ClubInfoDashboard";
 import AchivementsDashboard from "./Achivements/AchivementsDashboard";
 import EventsInfoDashbaord from "./EventsDashboard/EventsInfoDashbaord";
+import NewEventRegistration from "./NewEventRegistration";
 
 
 /* ================================================================
@@ -38,6 +39,7 @@ import EventsInfoDashbaord from "./EventsDashboard/EventsInfoDashbaord";
 ================================================================ */
 
 const DashboardOverview = () => {
+  const [isEventModalOpen, setIsEventModalOpen] = useState(false);
 
   const eventStats = [
     {
@@ -203,6 +205,7 @@ const DashboardOverview = () => {
             {/* NEW EVENT BUTTON */}
             <button
               type="button"
+              onClick={() => setIsEventModalOpen(true)}
               className="
                 flex h-[42px]
                 shrink-0
@@ -1060,6 +1063,22 @@ const DashboardOverview = () => {
 
       </section>
 
+      {/* NEW EVENT POPUP — portal manages its own overlay */}
+      <NewEventRegistration
+        isOpen={isEventModalOpen}
+        onClose={() => setIsEventModalOpen(false)}
+        clubName="CodeFiesta"
+        onSaveDraft={async (data) => {
+          // Replace with backend/Supabase API request.
+          console.log("Draft (not persisted yet):", data);
+          window.alert("Draft preview captured. Connect the backend to save it.");
+        }}
+        onSubmit={async (data) => {
+          // Replace with backend/Supabase API request and ECA notification.
+          console.log("Approval request (not persisted yet):", data);
+          window.alert("Request preview captured. Connect the backend to submit it to ECA.");
+        }}
+      />
     </div>
   );
 };
