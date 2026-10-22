@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import {
   CalendarHeart,
@@ -31,6 +31,7 @@ import DocumenetsDashboard from "./Documents/DocumenetsDashboard";
 import ClubInfoDashboard from "./ClubInfoDashboard";
 import AchivementsDashboard from "./Achivements/AchivementsDashboard";
 import EventsInfoDashbaord from "./EventsDashboard/EventsInfoDashbaord";
+import NewEventRegistration from "./NewEventRegistration";
 
 
 /* ================================================================
@@ -38,6 +39,25 @@ import EventsInfoDashbaord from "./EventsDashboard/EventsInfoDashbaord";
 ================================================================ */
 
 const DashboardOverview = () => {
+  const [isEventModalOpen, setIsEventModalOpen] = useState(false);
+
+  useEffect(() => {
+    if (!isEventModalOpen) return;
+
+    const handleKeyDown = (event) => {
+      if (event.key === "Escape") {
+        setIsEventModalOpen(false);
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    document.body.style.overflow = "hidden";
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "";
+    };
+  }, [isEventModalOpen]);
 
   const eventStats = [
     {
@@ -203,6 +223,7 @@ const DashboardOverview = () => {
             {/* NEW EVENT BUTTON */}
             <button
               type="button"
+              onClick={() => setIsEventModalOpen(true)}
               className="
                 flex h-[42px]
                 shrink-0
@@ -1060,6 +1081,43 @@ const DashboardOverview = () => {
 
       </section>
 
+      {/* START NEW EVENT REGISTRATION MODAL */}
+      {isEventModalOpen && (
+        <div
+          className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/35 px-4 py-6 backdrop-blur-md"
+          onMouseDown={(event) => {
+            if (event.target === event.currentTarget) {
+              setIsEventModalOpen(false);
+            }
+          }}
+          role="presentation"
+        >
+          <div
+            role="dialog"
+            aria-modal="true"
+            aria-label="Start New Event"
+            className="relative max-h-[90vh] w-full max-w-[1100px] overflow-y-auto rounded-[20px] border border-white/60 bg-white shadow-[0_24px_80px_rgba(0,0,0,0.22)] animate-[modalIn_180ms_ease-out]"
+            onMouseDown={(event) => event.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={() => setIsEventModalOpen(false)}
+              aria-label="Close popup"
+              className="absolute right-4 top-4 flex h-9 w-9 items-center justify-center rounded-full border border-[#EAE2E2] bg-white/80 text-[#776D6D] transition hover:bg-[#900505] hover:text-white"
+            >
+              <span className="text-[22px] leading-none">&times;</span>
+            </button>
+            <NewEventRegistration />
+          </div>
+        </div>
+      )}
+
+      <style>{`
+        @keyframes modalIn {
+          from { opacity: 0; transform: translateY(8px) scale(0.98); }
+          to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+      `}</style>
     </div>
   );
 };
