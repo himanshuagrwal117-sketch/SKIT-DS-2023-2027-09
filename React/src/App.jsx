@@ -15,25 +15,6 @@ import StudentProfileDashboard from "./assets/components/Student_page/StudentPro
 
 const App = () => {
   return (
-<<<<<<< HEAD
-    <div>
-      <div class="100vh">
-      
-       <Routes>
-        <Route path='/'element={<LaunchPage/>}/>
-        <Route path='/studentpage' element={<StudentPage/>}/>
-        <Route path='/aboutus' element={<AboutUsHome/>}/>
-        <Route path='/startnewclub' element={<StartNewClub/>}/>
-        
-        <Route path='/ClubDashboard' element={<ClubDashboardPage/>}/>
-<Route path="/help" element={<HelpPage />} />
-       
-        <Route path='/aboutusJoinSphere' element={<AboutUsJoinSphere/>}/>
-       </Routes>
-  
-      </div>
-      
-=======
     <div className="min-h-screen">
       <Routes>
 
@@ -85,7 +66,6 @@ const App = () => {
         />
 
       </Routes>
->>>>>>> origin
     </div>
   );
 };
