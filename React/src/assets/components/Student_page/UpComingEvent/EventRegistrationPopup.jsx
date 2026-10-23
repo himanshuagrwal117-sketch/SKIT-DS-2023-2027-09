@@ -1,4 +1,3 @@
-
 import React, { useEffect } from "react";
 import { createPortal } from "react-dom";
 import {
@@ -12,6 +11,10 @@ import {
   Clock3,
   ArrowUpRight,
   Users,
+  CheckCircle2,
+  AlertCircle,
+  Timer,
+  ShieldCheck,
 } from "lucide-react";
 
 const EventRegistrationPopup = ({
@@ -58,6 +61,32 @@ const EventRegistrationPopup = ({
   const facultyCoordinator = event?.facultyCoordinator || {};
   const studentCoordinator = event?.studentCoordinator || {};
 
+  /* -------------------------------------------------------
+     REGISTRATION INFORMATION
+  ------------------------------------------------------- */
+
+  const registrationOpen = event?.registrationOpen ?? true;
+
+  const registrationDeadline =
+    event?.registrationDeadline || "Registration deadline not specified";
+
+  const capacity = event?.capacity ?? null;
+  const registeredCount = event?.registeredCount ?? 0;
+
+  const seatsRemaining =
+    capacity !== null
+      ? Math.max(capacity - registeredCount, 0)
+      : null;
+
+  const isFull =
+    capacity !== null && registeredCount >= capacity;
+
+  const canRegister = registrationOpen && !isFull;
+
+  /* -------------------------------------------------------
+     COORDINATOR CARD
+  ------------------------------------------------------- */
+
   const CoordinatorCard = ({
     title,
     coordinator,
@@ -102,6 +131,70 @@ const EventRegistrationPopup = ({
     );
   };
 
+  /* -------------------------------------------------------
+     REGISTRATION STATUS
+  ------------------------------------------------------- */
+
+  const RegistrationStatus = () => {
+    if (!registrationOpen) {
+      return (
+        <div className="flex items-start gap-3 rounded-xl border border-red-200 bg-red-50 p-3.5">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-red-100 text-red-600">
+            <AlertCircle size={18} />
+          </div>
+
+          <div>
+            <p className="text-sm font-bold text-red-700">
+              Registration closed
+            </p>
+
+            <p className="mt-0.5 text-xs leading-5 text-red-600">
+              Registration for this event is currently unavailable.
+            </p>
+          </div>
+        </div>
+      );
+    }
+
+    if (isFull) {
+      return (
+        <div className="flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 p-3.5">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-amber-100 text-amber-700">
+            <Users size={18} />
+          </div>
+
+          <div>
+            <p className="text-sm font-bold text-amber-800">
+              Event is full
+            </p>
+
+            <p className="mt-0.5 text-xs leading-5 text-amber-700">
+              All available registration slots have been filled.
+            </p>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="flex items-start gap-3 rounded-xl border border-green-200 bg-green-50 p-3.5">
+        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-green-100 text-green-700">
+          <CheckCircle2 size={18} />
+        </div>
+
+        <div>
+          <p className="text-sm font-bold text-green-700">
+            Registration is open
+          </p>
+
+          <p className="mt-0.5 text-xs leading-5 text-green-600">
+            You can register for this event right now.
+          </p>
+        </div>
+      </div>
+    );
+  };
+
   return createPortal(
     <div
       className="fixed inset-0 z-[9999] flex items-center justify-center bg-[#160706]/65 p-3 backdrop-blur-md sm:p-5"
@@ -116,6 +209,7 @@ const EventRegistrationPopup = ({
         className="relative flex max-h-[92dvh] w-full max-w-[1000px] flex-col overflow-hidden rounded-2xl bg-white shadow-[0_30px_100px_rgba(0,0,0,0.3)] sm:rounded-[24px]"
       >
         {/* CLOSE BUTTON */}
+
         <button
           type="button"
           onClick={onClose}
@@ -126,6 +220,7 @@ const EventRegistrationPopup = ({
         </button>
 
         {/* HEADER */}
+
         <div className="shrink-0 border-b border-[#f0e8e6] px-5 py-5 pr-16 sm:px-7 sm:py-5 sm:pr-20">
           <div className="flex items-center gap-2">
             <span className="h-1.5 w-1.5 rounded-full bg-[#922b25]" />
@@ -141,9 +236,12 @@ const EventRegistrationPopup = ({
         </div>
 
         {/* MAIN CONTENT */}
+
         <div className="min-h-0 flex-1 overflow-y-auto">
           <div className="grid grid-cols-1 gap-6 p-5 sm:p-7 lg:grid-cols-[0.78fr_1.22fr] lg:gap-8">
+
             {/* LEFT: EVENT POSTER */}
+
             <section className="min-w-0">
               <div className="relative overflow-hidden rounded-2xl border border-[#eee4e1] bg-[#f7efed]">
                 <div className="relative aspect-[4/4.5] max-h-[430px] w-full">
@@ -181,12 +279,14 @@ const EventRegistrationPopup = ({
                 </div>
 
                 {/* POSTER FOOTER */}
+
                 <div className="border-t border-[#eee4e1] bg-white px-4 py-3.5">
                   <div className="flex items-center justify-between gap-3">
                     <div className="min-w-0">
                       <p className="truncate text-sm font-semibold text-[#302321]">
                         {eventClub}
                       </p>
+
                       <p className="mt-0.5 text-xs text-[#938783]">
                         SKIT Jaipur
                       </p>
@@ -200,6 +300,7 @@ const EventRegistrationPopup = ({
               </div>
 
               {/* POINTS CARD */}
+
               <div className="mt-4 flex items-center justify-between gap-3 rounded-2xl border border-[#ead4b5] bg-gradient-to-r from-[#fff9ee] to-[#fffdf8] p-4">
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#f6e6c8] text-[#9b6518]">
@@ -210,6 +311,7 @@ const EventRegistrationPopup = ({
                     <p className="text-sm font-semibold text-[#48341d]">
                       Earn points
                     </p>
+
                     <p className="mt-0.5 text-xs text-[#967c59]">
                       For your campus activity
                     </p>
@@ -218,14 +320,57 @@ const EventRegistrationPopup = ({
 
                 <p className="shrink-0 text-xl font-bold text-[#975d11]">
                   {eventPoints}
-                  <span className="ml-1 text-xs font-medium">pts</span>
+                  <span className="ml-1 text-xs font-medium">
+                    pts
+                  </span>
                 </p>
+              </div>
+
+              {/* EXTRA EVENT HIGHLIGHTS */}
+
+              <div className="mt-4 grid grid-cols-2 gap-3">
+                <div className="rounded-xl border border-[#eee5e3] bg-[#fffdfc] p-3">
+                  <div className="flex items-center gap-2">
+                    <ShieldCheck
+                      size={16}
+                      className="text-[#8c2923]"
+                    />
+
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#927b77]">
+                      Verified
+                    </span>
+                  </div>
+
+                  <p className="mt-1.5 text-xs font-semibold text-[#3d302d]">
+                    Official campus event
+                  </p>
+                </div>
+
+                <div className="rounded-xl border border-[#eee5e3] bg-[#fffdfc] p-3">
+                  <div className="flex items-center gap-2">
+                    <Trophy
+                      size={16}
+                      className="text-[#9b6518]"
+                    />
+
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#927b77]">
+                      Reward
+                    </span>
+                  </div>
+
+                  <p className="mt-1.5 text-xs font-semibold text-[#3d302d]">
+                    {eventPoints} activity points
+                  </p>
+                </div>
               </div>
             </section>
 
             {/* RIGHT: EVENT DETAILS */}
+
             <section className="flex min-w-0 flex-col">
+
               {/* TITLE AND CATEGORY */}
+
               <div>
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-[#f8e9e7] px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.12em] text-[#8c2923]">
                   <Tag size={12} />
@@ -245,6 +390,7 @@ const EventRegistrationPopup = ({
               </div>
 
               {/* DATE AND VENUE */}
+
               <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
                 <div className="flex min-w-0 items-start gap-3 rounded-xl border border-[#eee8e6] bg-[#fdfbfa] p-3.5">
                   <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-[#f8e9e7] text-[#8c2923]">
@@ -255,6 +401,7 @@ const EventRegistrationPopup = ({
                     <p className="text-[10px] font-semibold uppercase tracking-wider text-[#a09693]">
                       Event date
                     </p>
+
                     <p className="mt-1 break-words text-sm font-semibold leading-snug text-[#352927]">
                       {eventDate}
                     </p>
@@ -277,6 +424,7 @@ const EventRegistrationPopup = ({
                     <p className="text-[10px] font-semibold uppercase tracking-wider text-[#a09693]">
                       Venue
                     </p>
+
                     <p className="mt-1 break-words text-sm font-semibold leading-snug text-[#352927]">
                       {eventVenue}
                     </p>
@@ -285,6 +433,7 @@ const EventRegistrationPopup = ({
               </div>
 
               {/* EVENT BRIEF */}
+
               <div className="mt-6">
                 <h3 className="text-xs font-bold uppercase tracking-[0.14em] text-[#5c302c]">
                   About this event
@@ -295,7 +444,72 @@ const EventRegistrationPopup = ({
                 </p>
               </div>
 
+              {/* REGISTRATION INFORMATION */}
+
+              <div className="mt-6 rounded-2xl border border-[#eee4e1] bg-[#fdfbfa] p-4">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <h3 className="text-xs font-bold uppercase tracking-[0.14em] text-[#5c302c]">
+                      Registration information
+                    </h3>
+
+                    <p className="mt-1 text-xs text-[#978b88]">
+                      Check availability before registering.
+                    </p>
+                  </div>
+
+                  <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-[#f8e9e7] text-[#8c2923]">
+                    <Timer size={17} />
+                  </div>
+                </div>
+
+                <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  <div className="rounded-xl border border-[#eee5e3] bg-white p-3">
+                    <div className="flex items-center gap-2">
+                      <CalendarDays
+                        size={15}
+                        className="text-[#8c2923]"
+                      />
+
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#9b8b87]">
+                        Registration deadline
+                      </span>
+                    </div>
+
+                    <p className="mt-2 text-sm font-semibold text-[#352927]">
+                      {registrationDeadline}
+                    </p>
+                  </div>
+
+                  <div className="rounded-xl border border-[#eee5e3] bg-white p-3">
+                    <div className="flex items-center gap-2">
+                      <Users
+                        size={15}
+                        className="text-[#8c2923]"
+                      />
+
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-[#9b8b87]">
+                        Available seats
+                      </span>
+                    </div>
+
+                    <p className="mt-2 text-sm font-semibold text-[#352927]">
+                      {seatsRemaining !== null
+                        ? `${seatsRemaining} seats remaining`
+                        : "Limited seats"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* REGISTRATION STATUS */}
+
+              <div className="mt-4">
+                <RegistrationStatus />
+              </div>
+
               {/* COORDINATOR INFORMATION */}
+
               <div className="mt-6">
                 <div className="flex items-center justify-between gap-3">
                   <h3 className="text-xs font-bold uppercase tracking-[0.14em] text-[#5c302c]">
@@ -323,26 +537,46 @@ const EventRegistrationPopup = ({
               </div>
 
               {/* REGISTRATION BUTTON */}
+
               <div className="mt-7 border-t border-[#f0e8e6] pt-5">
                 <button
                   type="button"
+                  disabled={!canRegister}
                   onClick={() => {
-                    if (onRegister) {
+                    if (canRegister && onRegister) {
                       onRegister(event);
                     }
                   }}
-                  className="group flex w-full items-center justify-center gap-2.5 rounded-xl bg-gradient-to-r from-[#922b25] to-[#711914] px-5 py-4 text-sm font-bold text-white shadow-[0_8px_20px_rgba(120,31,27,0.2)] transition-all duration-200 hover:-translate-y-0.5 hover:from-[#a3332c] hover:to-[#841e18] hover:shadow-[0_12px_26px_rgba(120,31,27,0.3)] focus:outline-none focus:ring-4 focus:ring-[#922b25]/20 active:translate-y-0"
+                  className={`group flex w-full items-center justify-center gap-2.5 rounded-xl px-5 py-4 text-sm font-bold text-white transition-all duration-200 focus:outline-none focus:ring-4 ${
+                    canRegister
+                      ? "bg-gradient-to-r from-[#922b25] to-[#711914] shadow-[0_8px_20px_rgba(120,31,27,0.2)] hover:-translate-y-0.5 hover:from-[#a3332c] hover:to-[#841e18] hover:shadow-[0_12px_26px_rgba(120,31,27,0.3)] focus:ring-[#922b25]/20 active:translate-y-0"
+                      : "cursor-not-allowed bg-[#b8aaa7] opacity-80"
+                  }`}
                 >
-                  Register for this event
-                  <ArrowUpRight
-                    size={18}
-                    className="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-                  />
+                  {canRegister ? (
+                    <>
+                      Register for this event
+
+                      <ArrowUpRight
+                        size={18}
+                        className="transition-transform duration-200 group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                      />
+                    </>
+                  ) : (
+                    <>
+                      {isFull
+                        ? "Event is Full"
+                        : "Registration Closed"}
+
+                      <AlertCircle size={18} />
+                    </>
+                  )}
                 </button>
 
                 <p className="mt-3 text-center text-[11px] leading-5 text-[#9a8e8b]">
-                  Be part of the experience. Register and join your campus
-                  community.
+                  {canRegister
+                    ? "Be part of the experience. Register and join your campus community."
+                    : "Registration is currently unavailable for this event."}
                 </p>
               </div>
             </section>
