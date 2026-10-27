@@ -1,6 +1,5 @@
-
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import Counter from "../Effects/Counter";
 import { useGoogleLogin } from "@react-oauth/google";
@@ -54,51 +53,72 @@ const Section1 = () => {
 
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [loginError, setLoginError] = useState("");
+  const [loginType, setLoginType] = useState(null);
 
   /* ---------------------------------------------------------------- */
-  /* Google Login */
+  /* Common Authentication Function */
   /* ---------------------------------------------------------------- */
 
-  const login = useGoogleLogin({
+  const authenticateWithBackend = async (code, type) => {
+    const endpoint =
+      type === "club"
+        ? "/auth/club/google"
+        : "/auth/google";
+
+    const result = await fetch(`${API_URL}${endpoint}`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ code }),
+    });
+
+    const data = await result.json();
+
+    if (!result.ok) {
+      throw new Error(
+        data.message || "Google authentication failed."
+      );
+    }
+
+    return data;
+  };
+
+  /* ---------------------------------------------------------------- */
+  /* Student Google Login */
+  /* ---------------------------------------------------------------- */
+
+  const studentLogin = useGoogleLogin({
     flow: "auth-code",
 
     onSuccess: async (response) => {
       setIsLoggingIn(true);
+      setLoginType("student");
       setLoginError("");
 
       try {
         if (!response.code) {
-          throw new Error("Google authorization code was not received.");
-        }
-
-        // Send Google authorization code to deployed backend
-        const result = await fetch(`${API_URL}/auth/google`, {
-          method: "POST",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            code: response.code,
-          }),
-        });
-
-        const data = await result.json();
-
-        if (!result.ok) {
           throw new Error(
-            data.message || "Google authentication failed."
+            "Google authorization code was not received."
           );
         }
 
-        // Backend successfully authenticated SKIT college email
-        console.log("Orbix login successful:", data.email);
+        const data = await authenticateWithBackend(
+          response.code,
+          "student"
+        );
 
-        // Redirect to Student Dashboard
-        navigate("/studentpage", { replace: true });
+        console.log(
+          "Student login successful:",
+          data.email
+        );
 
+        navigate("/studentpage", {
+          replace: true,
+        });
       } catch (error) {
-        console.error("Orbix login error:", error);
+        console.error("Student login error:", error);
 
         setLoginError(
           error.message ||
@@ -106,13 +126,76 @@ const Section1 = () => {
         );
       } finally {
         setIsLoggingIn(false);
+        setLoginType(null);
       }
     },
 
     onError: () => {
       setIsLoggingIn(false);
+      setLoginType(null);
       setLoginError(
         "Google sign-in failed or was cancelled. Please try again."
+      );
+    },
+  });
+
+  /* ---------------------------------------------------------------- */
+  /* Club Google Login */
+  /* ---------------------------------------------------------------- */
+
+  const clubLogin = useGoogleLogin({
+    flow: "auth-code",
+
+    onSuccess: async (response) => {
+      setIsLoggingIn(true);
+      setLoginType("club");
+      setLoginError("");
+
+      try {
+        if (!response.code) {
+          throw new Error(
+            "Google authorization code was not received."
+          );
+        }
+
+        const data = await authenticateWithBackend(
+          response.code,
+          "club"
+        );
+
+        if (data.role !== "club" || !data.clubId) {
+          throw new Error(
+            "Club authentication failed. Invalid club session."
+          );
+        }
+
+        console.log(
+          "Club login successful:",
+          data.clubName,
+          data.clubId
+        );
+
+        navigate("/ClubDashboard", {
+          replace: true,
+        });
+      } catch (error) {
+        console.error("Club login error:", error);
+
+        setLoginError(
+          error.message ||
+            "Unable to log in as a club. Please try again."
+        );
+      } finally {
+        setIsLoggingIn(false);
+        setLoginType(null);
+      }
+    },
+
+    onError: () => {
+      setIsLoggingIn(false);
+      setLoginType(null);
+      setLoginError(
+        "Club Google sign-in failed or was cancelled."
       );
     },
   });
@@ -177,22 +260,34 @@ const Section1 = () => {
             type="button"
             onClick={() => {
               setLoginError("");
-              login();
+              setLoginType("student");
+              studentLogin();
             }}
             disabled={isLoggingIn}
             className="w-52 rounded-full border-2 border-amber-50 bg-white px-5 py-2.5 text-sm font-bold text-[#900505] transition-all duration-200 ease-linear hover:cursor-pointer hover:bg-transparent hover:text-amber-50 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {isLoggingIn ? "Logging in..." : "Login as a Student"}
+            {isLoggingIn && loginType === "student"
+              ? "Logging in..."
+              : "Login as a Student"}
           </button>
 
           {/* Club Login */}
 
-          <Link
-            to="/ClubDashboard"
-            className="flex w-52 items-center justify-center rounded-full border-2 border-amber-50 bg-white px-5 py-2.5 text-sm font-bold text-[#900505] transition-all duration-200 ease-linear hover:bg-transparent hover:text-amber-50"
+          <button
+            type="button"
+            onClick={() => {
+              setLoginError("");
+              setLoginType("club");
+              clubLogin();
+            }}
+            disabled={isLoggingIn}
+            className="flex w-52 items-center justify-center rounded-full border-2 border-amber-50 bg-white px-5 py-2.5 text-sm font-bold text-[#900505] transition-all duration-200 ease-linear hover:cursor-pointer hover:bg-transparent hover:text-amber-50 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            Login as a Club
-          </Link>
+            {isLoggingIn && loginType === "club"
+              ? "Logging in..."
+              : "Login as a Club"}
+          </button>
+
         </motion.div>
 
         {/* Login Error */}
@@ -254,6 +349,7 @@ const Section1 = () => {
             alt="Orbix platform preview"
             className="h-[65%] w-[60%] max-w-4xl object-contain drop-shadow-2xl lg:max-w-[850px]"
           />
+
         </div>
       </div>
     </section>
