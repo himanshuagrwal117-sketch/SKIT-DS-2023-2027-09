@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import {
   CalendarHeart,
@@ -33,13 +33,64 @@ import AchivementsDashboard from "./Achivements/AchivementsDashboard";
 import EventsInfoDashbaord from "./EventsDashboard/EventsInfoDashbaord";
 import NewEventRegistration from "./NewEventRegistration";
 
+const API_URL = (
+  import.meta.env.VITE_API_URL ||
+  "http://localhost:5000"
+).replace(/\/+$/, "");
+
 
 /* ================================================================
    DASHBOARD OVERVIEW
 ================================================================ */
 
-const DashboardOverview = () => {
+const saveEventRequest = async (data) => {
+  const formData = new FormData();
+
+  formData.append("status", data.status);
+  formData.append("eventName", data.eventName);
+  formData.append("motive", data.motive);
+  formData.append("eventDate", data.eventDate);
+  formData.append("startTime", data.startTime);
+  formData.append("endTime", data.endTime);
+  formData.append("venue", data.venue);
+  formData.append("requirements", data.requirements);
+  formData.append("trophyCount", String(data.trophyCount));
+
+  if (data.proposal) {
+    formData.append("proposal", data.proposal);
+  }
+
+  const response = await fetch(
+  `${API_URL}/api/event-requests`,
+    {
+      method: "POST",
+      credentials: "include",
+      body: formData,
+    }
+  );
+
+  const result = await response.json();
+
+  if (!response.ok) {
+    throw new Error(result.message || "Failed to save event");
+  }
+
+  return result;
+};
+
+
+
+
+const DashboardOverview = ({ clubName }) => {
   const [isEventModalOpen, setIsEventModalOpen] = useState(false);
+
+  const [eventRequestStats, setEventRequestStats] = useState({
+  totalRequests: 0,
+  pendingRequests: 0,
+  draftRequests: 0,
+});
+
+const [statsLoading, setStatsLoading] = useState(true);
 
   const eventStats = [
     {
@@ -62,12 +113,56 @@ const DashboardOverview = () => {
     },
     {
       title: "Event Requests",
-      value: "00",
+      value: statsLoading
+  ? "..."
+  : String(eventRequestStats.pendingRequests).padStart(2, "0"),
       description: "Awaiting approval",
       icon: ClipboardClock,
     },
   ];
+   // ============================================
+// CLUB EVENT REQUEST STATISTICS
+// ============================================
 
+
+
+useEffect(() => {
+  let active = true;
+
+  const fetchEventRequestStats = async () => {
+    try {
+      const response = await fetch(
+        `${API_URL}/api/event-requests/stats`,
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch event request statistics");
+      }
+
+      const data = await response.json();
+
+      if (active && data.success) {
+        setEventRequestStats(data.statistics);
+      }
+    } catch (error) {
+      console.error("Event statistics error:", error);
+    } finally {
+      if (active) {
+        setStatsLoading(false);
+      }
+    }
+  };
+
+  fetchEventRequestStats();
+
+  return () => {
+    active = false;
+  };
+}, []);
 
   return (
     <div className="w-full">
@@ -162,7 +257,7 @@ const DashboardOverview = () => {
                 sm:text-[26px]
               "
             >
-              Hello, CodeFiesta Club
+              Hello, {clubName || "Club"}
             </h2>
 
 
@@ -1064,21 +1159,28 @@ const DashboardOverview = () => {
       </section>
 
       {/* NEW EVENT POPUP — portal manages its own overlay */}
-      <NewEventRegistration
-        isOpen={isEventModalOpen}
-        onClose={() => setIsEventModalOpen(false)}
-        clubName="CodeFiesta"
-        onSaveDraft={async (data) => {
-          // Replace with backend/Supabase API request.
-          console.log("Draft (not persisted yet):", data);
-          window.alert("Draft preview captured. Connect the backend to save it.");
-        }}
-        onSubmit={async (data) => {
-          // Replace with backend/Supabase API request and ECA notification.
-          console.log("Approval request (not persisted yet):", data);
-          window.alert("Request preview captured. Connect the backend to submit it to ECA.");
-        }}
-      />
+      
+<NewEventRegistration
+  isOpen={isEventModalOpen}
+  onClose={() => setIsEventModalOpen(false)}
+  clubName={clubName || "Club"}
+  onSaveDraft={async (data) => {
+    await saveEventRequest(data);
+    window.alert("Event draft saved successfully!");
+  }}
+  onSubmit={async (data) => {
+  await saveEventRequest(data);
+
+  setEventRequestStats((prev) => ({
+    ...prev,
+    totalRequests: prev.totalRequests + 1,
+    pendingRequests: prev.pendingRequests + 1,
+  }));
+
+  window.alert("Event submitted for ECA approval!");
+}}
+/>
+
     </div>
   );
 };
@@ -1137,6 +1239,7 @@ const SocialButton = ({
 
 const Dashboard = ({
   ActiveState = "dashboard",
+  clubName,
 }) => {
 
   const renderContent = () => {
@@ -1144,7 +1247,7 @@ const Dashboard = ({
     switch (ActiveState) {
 
       case "dashboard":
-        return <DashboardOverview />;
+        return <DashboardOverview clubName={clubName} />;
 
 
       case "club information":
@@ -1202,7 +1305,7 @@ const Dashboard = ({
 
 
       default:
-        return <DashboardOverview />;
+        return <DashboardOverview clubName={clubName} />;
 
     }
 
