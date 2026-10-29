@@ -11,45 +11,90 @@ import ClubInfoDashboard from "./ClubInfoDashboard";
 import AchivementsDashboard from "./Achivements/AchivementsDashboard";
 import EventsInfoDashbaord from "./EventsDashboard/EventsInfoDashbaord";
 
-const DashBoardRightSection = ({ ActiveState }) => {
+// =====================================================
+// DASHBOARD RIGHT SECTION
+// =====================================================
 
-  /* =====================================================
-      RENDER ACTIVE DASHBOARD SECTION
-  ===================================================== */
+const DashBoardRightSection = ({
+  ActiveState,
+  club,
+  clubId,
+}) => {
+
+  // =====================================================
+  // CLUB INFORMATION
+  // =====================================================
+
+  const clubData = {
+    id: club?.id ?? clubId ?? null,
+    name: club?.name ?? "",
+    email: club?.email ?? "",
+  };
+
+  // =====================================================
+  // COMMON PROPS FOR ALL DASHBOARD COMPONENTS
+  // =====================================================
+
+  const commonProps = {
+    club: clubData,
+    clubId: clubData.id,
+    clubName: clubData.name,
+    clubEmail: clubData.email,
+  };
+
+  // =====================================================
+  // RENDER ACTIVE DASHBOARD SECTION
+  // =====================================================
 
   const renderContent = () => {
     switch (ActiveState) {
 
+      // ================= DASHBOARD =================
+
       case "dashboard":
-        return <Dashboard />;
+        return <Dashboard {...commonProps} />;
+
+      // ================= CLUB INFORMATION =================
 
       case "club information":
-        return <ClubInfoDashboard />;
+        return <ClubInfoDashboard {...commonProps} />;
+
+      // ================= EVENTS =================
 
       case "events":
-        return <EventsInfoDashbaord />;
+        return <EventsInfoDashbaord {...commonProps} />;
+
+      // ================= MEMBERS =================
 
       case "member info":
-        return <MemebrsInfoDashboard />;
+        return <MemebrsInfoDashboard {...commonProps} />;
+
+      // ================= VOLUNTEERS =================
 
       case "volunteer info":
-        return <VolunteersInfoDashboard />;
+        return <VolunteersInfoDashboard {...commonProps} />;
+
+      // ================= PENDING EVENTS =================
 
       case "pending event":
-        return <PendingEventsDashboard />;
+        return <PendingEventsDashboard {...commonProps} />;
+
+      // ================= DOCUMENTS =================
 
       case "documents":
-        return <DocumenetsDashboard />;
+        return <DocumenetsDashboard {...commonProps} />;
+
+      // ================= ACHIEVEMENTS =================
 
       case "achievements":
-        return <AchivementsDashboard />;
+        return <AchivementsDashboard {...commonProps} />;
+
+      // ================= GALLERY =================
 
       case "gallery":
-        return <Gallery />;
+        return <Gallery {...commonProps} />;
 
-      /* =================================================
-          NEW SIDEBAR ITEMS
-      ================================================= */
+      // ================= REGISTRATIONS =================
 
       case "registrations":
         return (
@@ -59,6 +104,8 @@ const DashBoardRightSection = ({ ActiveState }) => {
           />
         );
 
+      // ================= SETTINGS =================
+
       case "settings":
         return (
           <EmptySection
@@ -67,11 +114,12 @@ const DashBoardRightSection = ({ ActiveState }) => {
           />
         );
 
+      // ================= DEFAULT =================
+
       default:
-        return <Dashboard />;
+        return <Dashboard {...commonProps} />;
     }
   };
-
 
   return (
     <div
@@ -87,10 +135,9 @@ const DashBoardRightSection = ({ ActiveState }) => {
   );
 };
 
-
-/* =====================================================
-    TEMPORARY EMPTY SECTION
-===================================================== */
+// =====================================================
+// TEMPORARY EMPTY SECTION
+// =====================================================
 
 const EmptySection = ({ title, description }) => {
   return (
@@ -158,7 +205,6 @@ const EmptySection = ({ title, description }) => {
             border border-[#900505]/10
             bg-[#900505]/5
             px-3 py-1.5
-
             text-[9px]
             font-bold
             uppercase
@@ -173,6 +219,5 @@ const EmptySection = ({ title, description }) => {
     </div>
   );
 };
-
 
 export default DashBoardRightSection;
