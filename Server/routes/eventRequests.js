@@ -5,6 +5,7 @@ import crypto from "node:crypto";
 import supabase from "../supabase.js";
 import { Resend } from "resend";
 
+
 const router = express.Router();
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024;
@@ -1468,20 +1469,29 @@ router.get(
       const { data, error } = await supabase
         .from("event_requests")
         .select(`
-          id,
-          club_id,
-          event_name,
-          motive,
-          event_date,
-          start_time,
-          end_time,
-          venue,
-          eca_requirements,
-          trophy_count,
-          proposal_path,
-          status,
-          created_at
-        `)
+  id,
+  club_id,
+  event_name,
+  motive,
+  event_date,
+  start_time,
+  end_time,
+  venue,
+  eca_requirements,
+  trophy_count,
+  proposal_path,
+  status,
+  rejection_reason,
+  reviewed_by,
+  reviewed_at,
+  poster_path,
+  poster_status,
+  poster_rejection_reason,
+  published_at,
+  academic_year,
+  created_at,
+  updated_at
+`)
         .eq("club_id", req.clubId)
         .order("created_at", {
           ascending: false,

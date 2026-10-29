@@ -8,6 +8,8 @@ import jwt from "jsonwebtoken";
 import eventRequestsRouter from "./routes/eventRequests.js";
 import supabase from "./supabase.js";
 
+import ecaAdminRouter from "./routes/ecaAdmin.js";
+
 // =====================================================
 // ENVIRONMENT CONFIGURATION
 // =====================================================
@@ -78,6 +80,12 @@ app.use(
   "/api/event-requests",
   eventRequestsRouter
 );
+
+// =====================================================
+// ECA ADMIN ROUTES
+// =====================================================
+
+app.use("/api/eca", ecaAdminRouter);
 
 // =====================================================
 // CORS DEBUG
